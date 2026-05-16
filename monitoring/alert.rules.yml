@@ -1,0 +1,45 @@
+groups:
+  - name: sre-alert-rules
+    rules:
+      - alert: OrderServiceDown
+        expr: up{job="order-service"} == 0
+        for: 30s
+        labels: { severity: critical }
+        annotations:
+          summary: "Order Service is down"
+          description: "Prometheus cannot scrape the Order Service metrics endpoint."
+      - alert: PaymentServiceDown
+        expr: up{job="payment-service"} == 0
+        for: 30s
+        labels: { severity: critical }
+        annotations:
+          summary: "Payment Service is down"
+          description: "Payment Service metrics target is unavailable."
+      - alert: NotificationServiceDown
+        expr: up{job="notification-service"} == 0
+        for: 30s
+        labels: { severity: warning }
+        annotations:
+          summary: "Notification Service is down"
+          description: "Notification Service metrics target is unavailable."
+      - alert: HighOrderServiceErrorRate
+        expr: error_count{job="order-service"} > 0
+        for: 30s
+        labels: { severity: warning }
+        annotations:
+          summary: "Order Service has errors"
+          description: "The Order Service returned failed HTTP requests."
+      - alert: HighOrderServiceLatency
+        expr: request_duration_seconds_sum{job="order-service"} / request_duration_seconds_count{job="order-service"} > 0.2
+        for: 30s
+        labels: { severity: warning }
+        annotations:
+          summary: "Order Service latency is above SLO"
+          description: "Average request duration is higher than 200 ms."
+      - alert: OrderServiceRecentlyRestarted
+        expr: process_uptime_seconds{job="order-service"} < 60
+        for: 15s
+        labels: { severity: info }
+        annotations:
+          summary: "Order Service restarted recently"
+          description: "The Order Service process uptime is less than 60 seconds."

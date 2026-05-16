@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SRE Project</title>
+</head>
+<body>
+
+<h1>Microservices System</h1>
+
+<button onclick="loadOrders()">Load Orders</button>
+
+<pre id="result"></pre>
+
+<script>
+async function loadOrders() {
+  const res = await fetch('http://localhost:3001/products-with-orders');
+  const data = await res.json();
+  document.getElementById('result').innerText = JSON.stringify(data, null, 2);
+}
+</script>
+
+</body>
+</html>
